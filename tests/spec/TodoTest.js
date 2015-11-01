@@ -1,4 +1,4 @@
-describe("Adding and retrieving items from Todo List", function(){
+describe("Adding and retrieving items from Todo List: ", function(){
 	var todoList;
 	
 	beforeEach(function(){
@@ -27,8 +27,8 @@ describe("Adding and retrieving items from Todo List", function(){
 	it("New items added to list should not be completed", function(){
 		todoList.addItem(new TodoItem("Item #1"));
 		todoList.addItem(new TodoItem("Item #2"));
-		expect(todoList.getCompletedCount()).toBe(0);
-		expect(todoList.getItem(0).isCompleted()).toBe(false);
+		expect(todoList.completedCount()).toBe(0);
+		expect(todoList.getItem(0).isComplete()).toBe(false);
 	});
 	
 	it("An item cannot be on the list more than once - case insensitive", function(){
@@ -39,10 +39,21 @@ describe("Adding and retrieving items from Todo List", function(){
 		expect(todoList.getSize()).toBe(1);
 	});
 	
+	it("Attempting to retrieve an item not in the list throws an exception", function(){
+		todoList.addItem(new TodoItem("Item #1"));
+		todoList.addItem(new TodoItem("Item #1"));
+		expect(function(){
+			todoList.getItem(-5)
+		}).toThrow("Item does not exist");
+		expect(function(){
+				todoList.getItem(123);
+		}).toThrow("Item does not exist");
+	});
+	
 });
 
 
-describe("Removing Item from Todo List", function(){
+describe("Removing Item from Todo List: ", function(){
 	var todoList; 
 	
 	beforeEach(function(){
@@ -61,8 +72,12 @@ describe("Removing Item from Todo List", function(){
 	it("Removing an item that doesn't exist from a todo should not change list size", function(){
 		todoList.removeItem(8);
 		expect(todoList.getSize()).toBe(3);
-		todoList.removeItem(-1);
-		expect(todoList.getSize()).toBe(3);
+	});
+	
+	it ("Items can be removed in reverse", function(){
+		var removedItem = todoList.removeItem(-2);
+		expect(todoList.getSize()).toBe(2);
+		expect(removedItem.text()).toBe("Item #2");
 	});
 	
 	it("Removing a completed item should reduce the completed count", function(){
@@ -75,7 +90,7 @@ describe("Removing Item from Todo List", function(){
 	
 })
 
-describe("Completing and uncompleting items on Todo list", function(){
+describe("Completing and uncompleting items on Todo list: ", function(){
 	var todoList;
 	
 	beforeEach(function(){
@@ -103,7 +118,7 @@ describe("Completing and uncompleting items on Todo list", function(){
 	it("Uncompleting an item reduces the completed count", function(){
 		todoList.getItem(2).isComplete(true);
 		todoList.getItem(3).isComplete(true);
-		todoList.getItem(5).isComplete(true);
+		todoList.getItem(4).isComplete(true);
 		expect(todoList.completedCount()).toBe(3);
 		todoList.getItem(2).isComplete(false);
 		expect(todoList.completedCount()).toBe(2);
