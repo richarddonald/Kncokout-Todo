@@ -50,6 +50,13 @@ describe("Adding and retrieving items from Todo List: ", function(){
 		}).toThrow("Item does not exist");
 	});
 	
+	it("Do not add a blank todo item to the list",function(){
+		todoList.addItem(new TodoItem("Item #1"));
+		todoList.addItem(new TodoItem(""));
+		todoList.addItem(new TodoItem("   "));
+		expect(todoList.getSize()).toBe(1);
+	});
+	
 });
 
 

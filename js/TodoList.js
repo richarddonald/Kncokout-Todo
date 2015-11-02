@@ -25,6 +25,11 @@ TodoList.prototype.addItem = function(item){
 			return;
 		}
 	}
+	
+	if (item.text().trim().length == 0){
+		return;
+	}
+	
 	this.list.push(item);
 };
 
