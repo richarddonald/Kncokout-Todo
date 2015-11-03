@@ -2,8 +2,11 @@
 <html>
 <head>
 	<meta charset="utf-8">
+	<meta name="description" content="A Todo List app created using Knockout js">
+	<meta name="author" content="Richard Donald">
 	<title>Knockout Todo App</title>
 
+	<link href='https://fonts.googleapis.com/css?family=Sue+Ellen+Francisco|Work+Sans:400' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" href="css/Todo.css">
 
 	<script src="js/knockout-3.3.0.js"></script>
@@ -13,21 +16,34 @@
 </head>
 <body>
 	<h1>Knockout Todo App</h1>
-	<textarea data-bind="value: todoText" placeholder="Enter you Todo item here"></textarea><br/>
-	<button data-bind="click: addTodoItem">Add Todo</button>
 	
-	<div data-bind="visible: todoList().getSize() > 0">
-		<p>Completed <span data-bind="text: todoList().completedCount"></span> of <span data-bind="text: todoList().getSize"></span> Tasks</p>
+	
+	<div id="left-panel">
+		<div data-bind="visible: todoList().getSize() > 0" class="complete-count">
+			<p>Completed <strong><span data-bind="text: todoList().completedCount"></span></strong> of <strong><span data-bind="text: todoList().getSize"></span></strong> Tasks</p>
+		</div>
+		<textarea data-bind="value: todoText" placeholder="Enter your tasks to do here" id="todo-input"></textarea><br/>
+		<button data-bind="click: addTodoItem" id="add-button">Add Task</button>
 	</div>
 	
-	<div data-bind="foreach: todoList().list()">
-		<div data-bind="css: isComplete() ? 'complete' : 'incomplete'">
-			<p><span data-bind="text: $data.text"></p>
-			<p><input type="checkbox" data-bind="checked: $data.isComplete">Task complete</p>
+	
+	<div id="content-panel">
+		<div data-bind="foreach: todoList().list()">
+			<div class="note"  data-bind="css: isComplete() ? 'complete' : 'incomplete'">
+				<div>
+					<span class="remove" data-bind="click: function(){
+						$root.removeTodoItem($index());
+					}">&times;</span>
+				</div>
+				<p><span data-bind="html: $data.text"></p>
+				<label>
+					<input type="checkbox" data-bind="checked: $data.isComplete"> Task Complete
+				</label>
+			</div>
 		</div>
 	</div>
-	
 
+	
 	<script>	    
 		function TodoViewModel(){
 			var self = this;
@@ -35,6 +51,9 @@
 			self.todoList = ko.observable(new TodoList());
 			self.addTodoItem = function(){
 				self.todoList().addItem(new TodoItem(self.todoText()));
+			};
+			self.removeTodoItem = function(index){
+				self.todoList().removeItem(index);
 			};
 		};
 		
